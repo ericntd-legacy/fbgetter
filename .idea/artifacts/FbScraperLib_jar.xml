@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="FbScraperLib:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/FbScraperLib_jar</output-path>
+    <root id="archive" name="FbScraperLib.jar">
+      <element id="module-output" name="FbScraperLib" />
+    </root>
+  </artifact>
+</component>

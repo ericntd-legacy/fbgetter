@@ -23,6 +23,7 @@
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
         <module name="FBScraper" />
+        <module name="FbScraperExample" />
         <module name="FbScraperLib" />
         <module name="JavaApp1" />
       </profile>

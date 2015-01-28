@@ -3,11 +3,13 @@ package com.gec.entities;
 import com.restfb.Facebook;
 import com.restfb.types.User;
 
+import java.util.List;
+
 /**
  * Created by eric on 27/1/15.
  */
 public class UserFb extends User {
-   @Facebook("age_range")
+    @Facebook("age_range")
     private AgeRange ageRange;
 
     public AgeRange getAgeRange() {

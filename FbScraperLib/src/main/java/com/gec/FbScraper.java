@@ -3,12 +3,10 @@ package com.gec;
 import com.gec.entities.UserFb;
 import com.ning.http.client.Response;
 import com.restfb.*;
-import com.restfb.json.JsonArray;
-import com.restfb.json.JsonObject;
-import com.restfb.types.Page;
-import com.restfb.types.User;
+import com.restfb.types.Post;
 
 import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -18,41 +16,85 @@ public class FbScraper implements HttpRequester.Callback {
     private final String FB_GRAPH_BASE = "https://graph.facebook.com";
     private final String FB_ACCESS_TOKEN = "access_token";
     private final String FB_ME = "me";
+    private final String FB_FIELDS = "fields";
+
+    private final String FB_NAME = "name";
+    private final String FB_FIRST_NAME = "first_name";
+    private final String FB_LAST_NAME = "last_name";
+    private final String FB_LINK = "link";
+    private final String FB_GENDER = "gender";
+    private final String FB_AGE_RANGE = "age_range";
+    private final String FB_ID = "id";
+    private final String FB_EMAIL = "email";
+    private final String FB_LOCALE = "locale";
+
+    private final String FB_FIELDS_DEFAULT = FB_NAME + ", " + FB_FIRST_NAME + ", " + FB_LAST_NAME + ", " + FB_LINK + ", " + FB_GENDER + ", " + FB_AGE_RANGE + ", " + FB_ID + ", " + FB_EMAIL + ", " + FB_LOCALE;
 
     private String callbackUrl;
+    private Callback callback;
 
     private Logger l = Logger.getLogger(FbScraper.class.getSimpleName());
 
-    public FbScraper() {
+    public FbScraper(Callback callback) {
+        this.callback = callback;
     }
 
-    public void getUser(String accessToken, String userId, final String callbackUrl) {
+    /**
+     * My own implementation without third-party library
+     *
+     * @param accessToken
+     * @param userId
+     * @param callbackUrl
+     */
+    public void getUserM(String accessToken, String userId, final String callbackUrl) {
         this.callbackUrl = callbackUrl;
 
-        String finalUrl = FB_GRAPH_BASE+"/"+userId+"?"+FB_ACCESS_TOKEN+"="+accessToken;
-        System.out.println("final URL is "+finalUrl);
+        String finalUrl = FB_GRAPH_BASE + "/" + userId + "?" + FB_ACCESS_TOKEN + "=" + accessToken;
+        System.out.println("final URL is " + finalUrl);
         HttpRequester httpRequester = new HttpRequester(this);
         httpRequester.get(finalUrl);
     }
 
-    public void getCurrentUser(String accessToken, final String callbackUrl) {
+    public void getUser(String accessToken, String userId, String callbackUrl) {
+        UserFb user = getTheUser(accessToken, userId);
+        if (callbackUrl == null || callbackUrl.isEmpty()) {
+            if (this.callback != null) this.callback.onSuccess(user);
+        } else {
+            pingCallbackUrl(callbackUrl, user);
+        }
+    }
+
+    private void pingCallbackUrl(String callbackUrl, UserFb userFb) {
+        l.info("pingCallbackUrl");
+        HttpRequester httpRequester = new HttpRequester(this);
+        DefaultJsonMapper jsonMapper = new DefaultJsonMapper();
+        httpRequester.post(callbackUrl, jsonMapper.toJson(userFb));
+    }
+
+    public void getUser(String accessToken, String userId) {
+        UserFb user = getTheUser(accessToken, userId);
+        if (this.callback != null) this.callback.onSuccess(user);
+    }
+
+    public void getUser(String accessToken, String userId, Callback callback) {
+        callback.onSuccess(getTheUser(accessToken, userId));
+    }
+
+    public void getVideoPost(String accessToken, String postId, Callback callback) {
         FacebookClient facebookClient = new DefaultFacebookClient(accessToken);
-        // User user = facebookClient.fetchObject(FB_ME, User.class, Parameter.with("fields", "friends"));
-        // l.info("User name: " + user.getName());
-        // JsonObject me = facebookClient.fetchObject("me", JsonObject.class, Parameter.with("fields", "name, age_range, friends"));
-        UserFb me = facebookClient.fetchObject("me", UserFb.class, Parameter.with("fields", "name, age_range"));
-        l.info("Your name is "+me.getName());
-        l.info("Your age range is "+me.getAgeRange().getMin()+" - "+me.getAgeRange().getMax());
+        Post post = facebookClient.fetchObject(postId, Post.class);
+    }
 
-        // l.info(me.toString(3));
-//        JsonMapper jsonMapper = new DefaultJsonMapper();
-//        User userMe = jsonMapper.toJavaObject(me.toString(), User.class);
-//        l.info("Your name is "+userMe.getName());
-
-//        JsonArray friends = me.getJsonObject("friends").getJsonArray("data");
-//        for (int i=0;i<friends.length();i++) {
-//            l.info(friends.getJsonObject(i).toString(3));
-//        }
+    private UserFb getTheUser(String accessToken, String userId) {
+        l.info("getTheUser");
+        FacebookClient facebookClient = new DefaultFacebookClient(accessToken);
+        try {
+            UserFb user = facebookClient.fetchObject(userId, UserFb.class, Parameter.with(FB_FIELDS, FB_FIELDS_DEFAULT));
+            return user;
+        } catch (Throwable e) {
+            l.log(Level.SEVERE, "", e);
+        }
+        return null;
     }
 
     @Override
@@ -60,14 +102,19 @@ public class FbScraper implements HttpRequester.Callback {
         System.out.println("onSuccess");
         HttpRequester httpRequester = new HttpRequester(null);
         try {
-            System.out.println("response body is "+response.getResponseBody());
+            System.out.println("response body is " + response.getResponseBody());
             httpRequester.post(callbackUrl, response.getResponseBody());
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
     @Override
     public void onError(Throwable t) {
         t.printStackTrace();
+    }
+
+    public interface Callback {
+        public void onSuccess(UserFb user);
     }
 }

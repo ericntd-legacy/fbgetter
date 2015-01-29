@@ -1,34 +1,32 @@
 package com.example;
 
-import com.gec.FbScraper;
+import com.gec.FbGetter;
+import com.gec.Log;
 import com.gec.entities.UserFb;
-import com.sun.javafx.tools.packager.Log;
+import com.restfb.Connection;
+import com.restfb.types.NamedFacebookType;
+import com.restfb.types.Page;
 
-import java.util.logging.Logger;
+import java.util.List;
 
 /**
  * Created by eric on 28/1/15.
  */
-public class FbHelper implements FbScraper.Callback {
-    private  FbScraper fbScraper;
+public class FbHelper implements FbGetter.Callback {
 
-    private Logger l = Logger.getLogger(FbScraper.class.getSimpleName());
 
-    public  FbHelper() {
-        this.fbScraper = new FbScraper(this);
+    @Override
+    public void onSuccess(NamedFacebookType object) {
+
     }
 
     @Override
-    public void onSuccess(UserFb user) {
-        l.info("onSuccess");
-        if (user!=null) l.info("user name is "+user.getName());
+    public void onSuccess(Connection connection) {
+
     }
 
-    public FbScraper getFbScraper() {
-        return fbScraper;
-    }
+    @Override
+    public void onError(Throwable t) {
 
-    public void setFbScraper(FbScraper fbScraper) {
-        this.fbScraper = fbScraper;
     }
 }

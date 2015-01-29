@@ -26,6 +26,7 @@
         <module name="FbScraperExample" />
         <module name="FbScraperLib" />
         <module name="JavaApp1" />
+        <module name="myapp" />
       </profile>
     </annotationProcessing>
   </component>

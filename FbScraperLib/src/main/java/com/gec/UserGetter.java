@@ -5,6 +5,10 @@ import com.restfb.DefaultFacebookClient;
 import com.restfb.FacebookClient;
 import com.restfb.Parameter;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
+
 /**
  * Created by eric on 28/1/15.
  */
@@ -48,26 +52,32 @@ public class UserGetter extends FbGetter {
     }
 
 //    @Override
-//    public void onSuccess(Response response) {
-//        l.i("onSuccess");
+//    public void onHttpCompleted(Response response) {
+//        l.i("onHttpCompleted");
 //    }
 
     private void getUser(String accessToken, String objectId, String fields) {
-        l.i("getUser");
-        FacebookClient facebookClient = new DefaultFacebookClient(accessToken);
-        UserFb obj = new UserFb();
-        try {
-            if (fields!=null) {
-                obj  = facebookClient.fetchObject(objectId, UserFb.class, Parameter.with(FB_FIELDS,
-                        fields));
-            } else {
-                obj = facebookClient.fetchObject(objectId, UserFb.class);
-            }
-            if (this.callback != null) this.callback.onSuccess(obj);
-            // if (this.callbackUrl!=null&&this.callbackUrl.isEmpty()) pingCallbackUrl(callbackUrl, obj);
-        } catch (Throwable t) {
-            // l.log(Level.SEVERE, "caught", e);
-            l.e(t);
-        }
+        l.info("getUser");
+        FbCallable callable1 = new FbCallable(this, JOB_GET_USER, accessToken, objectId, null, null);
+        FutureTask<Void> task1 = new FutureTask<Void>(callable1);
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.execute(task1);
+
+//        FacebookClient facebookClient = new DefaultFacebookClient(accessToken);
+//        UserFb obj = new UserFb();
+//        try {
+//            if (fields!=null) {
+//                obj  = facebookClient.fetchObject(objectId, UserFb.class, Parameter.with(PARAM_FIELDS,
+//                        fields));
+//            } else {
+//                obj = facebookClient.fetchObject(objectId, UserFb.class);
+//            }
+//            if (this.callback != null) this.callback.onSuccess(obj);
+//            // if (this.callbackUrl!=null&&this.callbackUrl.isEmpty()) pingCallbackUrl(callbackUrl, obj);
+//        } catch (Throwable t) {
+//
+//            l.e(t);
+//            if (this.callback!=null) this.callback.onError(t);
+//        }
     }
 }

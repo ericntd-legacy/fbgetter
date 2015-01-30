@@ -4,8 +4,6 @@ import com.ning.http.client.AsyncCompletionHandler;
 import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.Response;
 
-import java.util.Objects;
-
 /**
  * Created by Eric on 25/01/15.
  */
@@ -26,7 +24,7 @@ public class HttpRequester {
                 public Response onCompleted(Response response) throws Exception {
                     // Do something with the Response
                     // ...
-                    onSuccess(response);
+                    HttpRequester.this.onCompleted(response);
                     return response;
                 }
 
@@ -50,7 +48,7 @@ public class HttpRequester {
                 public Response onCompleted(Response response) throws Exception {
                     // Do something with the Response
                     // ...
-                    onSuccess(response);
+                    HttpRequester.this.onCompleted(response);
                     return response;
                 }
 
@@ -67,8 +65,8 @@ public class HttpRequester {
         t.printStackTrace();
     }
 
-    private void onSuccess(Response response) {
-        if (this.callback != null) this.callback.onSuccess(response);
+    private void onCompleted(Response response) {
+        if (this.callback != null) this.callback.onHttpCompleted(response);
         else printResponse(response);
     }
 
@@ -76,9 +74,16 @@ public class HttpRequester {
         System.out.println(response.toString());
     }
 
+    /**
+     *
+     */
     public interface Callback {
-        public void onSuccess(Response response);
+        /**
+         *
+         * @param response
+         */
+        public void onHttpCompleted(Response response);
 
-        public void onError(Throwable t);
+        public void onHtttpError(Throwable t);
     }
 }

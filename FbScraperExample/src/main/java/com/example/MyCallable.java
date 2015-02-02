@@ -4,6 +4,7 @@ import com.gec.*;
 import com.restfb.Connection;
 import com.restfb.types.NamedFacebookType;
 import com.sun.istack.internal.NotNull;
+import com.sun.istack.internal.Nullable;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
@@ -18,6 +19,7 @@ public class MyCallable implements Callable<Object>, FbGetter.Callback {
     private String accessToken;
     @NotNull
     private String objectId;
+    @Nullable private String callbackUrl;
 
     private byte jobCode;
 
@@ -28,16 +30,17 @@ public class MyCallable implements Callable<Object>, FbGetter.Callback {
     // private Log l = new Log(this.getClass().getSimpleName());
     private Logger l = Logger.getLogger(this.getClass().getSimpleName());
 
-    public MyCallable(String accessToken, String objectId, byte jobCode) {
+    public MyCallable(String accessToken, String objectId, String callbackUrl, byte jobCode) {
         this.accessToken = accessToken;
         this.objectId = objectId;
+        this.callbackUrl = callbackUrl;
         this.jobCode = jobCode;
     }
 
     @Override
     public Object call() throws Exception {
         // l.info("call");
-        FbGetter fbGetter = FbGetterFactory.getFbGetter(this.jobCode, this, null);
+        FbGetter fbGetter = FbGetterFactory.getFbGetter(this.jobCode, this, this.callbackUrl);
         switch (jobCode) {
             case FbGetter.JOB_GET_USER:
                 UserGetter userGetter = (UserGetter) fbGetter; // FbGetterFactory.getFbGetter(FbGetterFactory.TYPE_USER,
@@ -52,6 +55,10 @@ public class MyCallable implements Callable<Object>, FbGetter.Callback {
             case FbGetter.JOB_GET_PAGE_VIDEO_POSTS:
                 VideoPostGetter postGetter = (VideoPostGetter) fbGetter;
                 postGetter.getPagePosts(accessToken, objectId);
+                break;
+            case FbGetter.JOB_GET_POST:
+                postGetter = (VideoPostGetter) fbGetter;
+                postGetter.getPost(accessToken, objectId);
                 break;
         }
 

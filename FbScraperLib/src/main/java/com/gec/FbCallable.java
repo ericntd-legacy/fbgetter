@@ -71,7 +71,11 @@ public class FbCallable implements Callable<Void> {
                     break;
                 case FbGetter.JOB_GET_PAGE_VIDEO_POSTS:
 //
-                    result = fetchConnection(id, Post.class);
+                    result = fetchPagePosts(id, Post.class);
+                    break;
+                case FbGetter.JOB_GET_POST:
+                    if (parameter!=null) result = facebookClient.fetchObject(id, Post.class, parameter);
+                    else result = facebookClient.fetchObject(id, Post.class);
                     break;
             }
 
@@ -86,7 +90,14 @@ public class FbCallable implements Callable<Void> {
         return null;
     }
 
-    private Object fetchConnection(String id, Class<Post> postClass) {
+    /**
+     * loop through all the pages to get all the posts of a page
+     *
+     * @param id
+     * @param postClass
+     * @return
+     */
+    private Object fetchPagePosts(String id, Class<Post> postClass) {
         FacebookClient facebookClient = new DefaultFacebookClient(accessToken);
         List<Post> posts = new ArrayList<Post>();
         List<Post> tmp = new ArrayList<Post>();
@@ -98,7 +109,8 @@ public class FbCallable implements Callable<Void> {
             while (tmp!=null) {
                 l.info("getting a batch of posts");
                 l.info("number of posts in this batch "+tmp.size());
-                posts.addAll(tmp);
+                // posts.addAll(tmp);
+                addVideoPosts(posts, tmp);
 
                 String nextUrl = result.getNextPageUrl();
                 l.info("next url is "+nextUrl);
@@ -112,6 +124,15 @@ public class FbCallable implements Callable<Void> {
         }
 
         return posts;
+    }
+
+    private void addVideoPosts(List<Post> posts, List<Post> tmp) {
+        for (int i=0;i<tmp.size();i++) {
+            Post p = tmp.get(i);
+            if (p.getType().equalsIgnoreCase(VideoPostGetter.TYPE_VIDEO)) {
+                posts.add(p);
+            }
+        }
     }
 
     public interface Callback {

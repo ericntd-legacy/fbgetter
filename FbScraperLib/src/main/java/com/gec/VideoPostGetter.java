@@ -16,6 +16,7 @@ import java.util.logging.Level;
  * Created by eric on 28/1/15.
  */
 public class VideoPostGetter extends FbGetter {
+    public static final String TYPE_VIDEO = "video";
 
     public VideoPostGetter(Callback callback, String callbackUrl) {
         super(callback, callbackUrl);
@@ -23,16 +24,10 @@ public class VideoPostGetter extends FbGetter {
 
     public void getPost(String accessToken, String postId) {
         l.info("getPost");
-        FacebookClient facebookClient = new DefaultFacebookClient(accessToken);
-
-        try {
-            Post post = facebookClient.fetchObject(postId, Post.class);
-            // l.info("page count is " + pages.getData().size());
-            if (this.callback != null) this.callback.onSuccess(post);
-        } catch (Throwable t) {
-            l.log(Level.SEVERE, "", t);
-            this.callback.onError(t);
-        }
+        FbCallable callable1 = new FbCallable(this, JOB_GET_POST, accessToken, postId, null, null);
+        FutureTask<Void> task1 = new FutureTask<Void>(callable1);
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.execute(task1);
     }
 
     public void getPagePosts(String accessToken, String pageId) {

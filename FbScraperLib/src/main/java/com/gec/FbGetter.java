@@ -28,6 +28,7 @@ public abstract class FbGetter implements HttpRequester.Callback, FbCallable.Cal
     public static final byte JOB_GET_USER = 1;
     public static final byte JOB_GET_USER_PAGES = 2;
     public static final byte JOB_GET_PAGE_VIDEO_POSTS = 3;
+    public static final byte JOB_GET_POST = 4;
 
     @Nullable protected String callbackUrl;
     @Nullable protected Callback callback;
@@ -40,7 +41,7 @@ public abstract class FbGetter implements HttpRequester.Callback, FbCallable.Cal
         this.callbackUrl = callbackUrl;
     }
 
-    protected void pingCallbackUrl(String callbackUrl, NamedFacebookType object) {
+    protected void pingCallbackUrl(Object object) {
         l.info("pingCallbackUrl");
         HttpRequester httpRequester = new HttpRequester(this);
         DefaultJsonMapper jsonMapper = new DefaultJsonMapper();
@@ -85,7 +86,7 @@ public abstract class FbGetter implements HttpRequester.Callback, FbCallable.Cal
      */
     @Override
     public void onHttpCompleted(Response response) {
-        System.out.println("onHttpCompleted");
+        l.info("onHttpCompleted");
         HttpRequester httpRequester = new HttpRequester(null);
         try {
             System.out.println("response body is " + response.getResponseBody());
@@ -97,12 +98,21 @@ public abstract class FbGetter implements HttpRequester.Callback, FbCallable.Cal
 
     @Override
     public void onHtttpError(Throwable t) {
+        l.info("onHtttpError");
         l.log(Level.SEVERE, "", t);
     }
 
     public void onSuccess(Object object) {
         l.info("onSuccess");
         if (this.callback!=null) this.callback.onSuccess(object);
+        if (this.callbackUrl!=null&&!this.callbackUrl.isEmpty()) {
+            pingCallbackUrl(object);
+//            if (object instanceof  NamedFacebookType) {
+//                pingCallbackUrl((NamedFacebookType) object);
+//            } else if (object instanceof  Connection) {
+//
+//            }
+        }
     }
     public void onError(Throwable t) {
         l.info("onError");

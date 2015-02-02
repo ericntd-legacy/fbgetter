@@ -15,6 +15,8 @@ public class FbGetterFactory {
                 return new PageGetter(callback, callbackUrl);
             case FbGetter.JOB_GET_PAGE_VIDEO_POSTS:
                 return new VideoPostGetter(callback, callbackUrl);
+            case FbGetter.JOB_GET_POST:
+                return new VideoPostGetter(callback, callbackUrl);
             default:
                 return null;
         }

@@ -29,13 +29,11 @@ public class Main {
         Log l = new Log("main");
 
         final String accessToken =
-                "CAACEdEose0cBAIFBZBrYiKi63J3rNDG4YZAwbDESs6AQLDR4Qw6gg27vtZALadAagQHyNe6r6v2kLEKntvZBNdRlkmgAtyLcspkLqp7KmUFjeFvMFU4MeT3z90mmUr8Kl5snJZCZCXrgzEE2rzJSnU0fl9ISJFp3pAJGEk3ZBQBTWW1pJ5D38cmRMpffcb9S1ZCbvZCGMsYjS2dtOqQsW1jAyz16ABZCcCAtcZD";
+                "CAACEdEose0cBAI6ZBJgwsaqgnhjjPFZBwqtsxlGO42RxJQbZBKuaZCS59E3jhSEMi90ZCVRZAcdR0v18DI4sGc6pJsop454tvtSmwjKmFaiwOWDMxYFZCNZCMnZC3gNCbQ48oJkbP9zVHHP2oHClhbtDU3aZBUhqEv1MR8ZB7dHLLDUrlJhfWuskpXGRW1GwXN2BMwJuK3WTLpzZBRNtw9oybCe73FfZAFlHzZCg4ZD";
         final String userId = "me";
         final String callBackUrl = "http://waach.local/callback.php";
 
-        Main obj = new Main();
-
-        MyCallable callable1 = new MyCallable(accessToken, userId, FbGetter.JOB_GET_USER);
+        MyCallable callable1 = new MyCallable(accessToken, userId, callBackUrl, FbGetter.JOB_GET_USER);
         FutureTask<Object> task1 = new FutureTask<Object>(callable1);
         ExecutorService executor1 = Executors.newSingleThreadExecutor();
         executor1.execute(task1);
@@ -53,7 +51,7 @@ public class Main {
 
         // get the pages of the user
         if (userFb != null) {
-            MyCallable callable2 = new MyCallable(accessToken, userId, FbGetter.JOB_GET_USER_PAGES);
+            MyCallable callable2 = new MyCallable(accessToken, userId, callBackUrl, FbGetter.JOB_GET_USER_PAGES);
             FutureTask<Object> task2 = new FutureTask<Object>(callable2);
 
             ExecutorService executor2 = Executors.newSingleThreadExecutor();
@@ -75,7 +73,8 @@ public class Main {
 
         List<Post> videoPosts = new ArrayList<Post>();
         if (page != null) {
-            MyCallable callable3 = new MyCallable(accessToken, page.getId(), FbGetter.JOB_GET_PAGE_VIDEO_POSTS);
+            MyCallable callable3 = new MyCallable(accessToken, page.getId(), callBackUrl, FbGetter
+                    .JOB_GET_PAGE_VIDEO_POSTS);
             FutureTask<Object> task3 = new FutureTask<Object>(callable3);
 
             ExecutorService executor2 = Executors.newSingleThreadExecutor();
@@ -107,20 +106,21 @@ public class Main {
                 e.printStackTrace();
             }
         }
-        if (videoPosts.size() > 0) {
-            int count = 0;
-            for (int i = 0; i < videoPosts.size(); i++) {
-                Post tmp = videoPosts.get(i);
-                if (tmp.getType().equalsIgnoreCase("video")) {
-                    count++;
-                    // l.i("a video post!");
-                    l.i("number of likes " + tmp.getLikesCount());
-                    l.i("number of comments " + tmp.getCommentsCount());
-                    l.i("number of shares " + tmp.getSharesCount());
-                }
-            }
-            l.i("number of video posts is "+count);
-        }
+
+//        if (videoPosts.size() > 0) {
+//            int count = 0;
+//            for (int i = 0; i < videoPosts.size(); i++) {
+//                Post tmp = videoPosts.get(i);
+//                if (tmp.getType().equalsIgnoreCase("video")) {
+//                    count++;
+//                    // l.i("a video post!");
+//                    l.i("number of likes " + tmp.getLikesCount());
+//                    l.i("number of comments " + tmp.getCommentsCount());
+//                    l.i("number of shares " + tmp.getSharesCount());
+//                }
+//            }
+//            l.i("number of video posts is "+count);
+//        }
 
 //        MyHandler handler = new MyHandler();
 //        ExecutorService executor = Executors.newCachedThreadPool();

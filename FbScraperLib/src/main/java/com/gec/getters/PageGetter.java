@@ -1,21 +1,23 @@
-package com.gec;
+package com.gec.getters;
 
-import com.restfb.DefaultFacebookClient;
-import com.restfb.FacebookClient;
-import com.restfb.Parameter;
-import com.restfb.types.Page;
+import com.gec.FbCallable;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
-import java.util.logging.Level;
 
 /**
  * Created by eric on 28/1/15.
  */
-public class PageGetter extends FbGetter {
+public class PageGetter extends FbObjectGetter {
     public PageGetter(Callback callback, String callbackUrl) {
         super(callback, callbackUrl);
+    }
+
+    @Override
+    public void getUser(String accessToken, String userId) {
+        UnsupportedOperationException t = new UnsupportedOperationException("Use UserGetter implementation instead");
+        onError(t);
     }
 
     public void getPage(String accessToken, String pageId) {
@@ -42,24 +44,15 @@ public class PageGetter extends FbGetter {
 //        return pages;
     }
 
+    @Override
+    public void getPagePosts(String accessToken, String pageId) {
+        UnsupportedOperationException t = new UnsupportedOperationException("Use PostGetter implementation instead");
+        onError(t);
+    }
+
     private void getPage(String accessToken, String objectId, String fields) {
         l.info("getPage");
-        FacebookClient facebookClient = new DefaultFacebookClient(accessToken);
-        Page obj;
-        try {
-            if (fields!=null) {
-                obj  = facebookClient.fetchObject(objectId, Page.class, Parameter.with(PARAM_FIELDS,
-                        fields));
-            } else {
-                obj = facebookClient.fetchObject(objectId, Page.class);
-            }
-            if (this.callback != null) this.callback.onSuccess(obj);
-            // if (this.callbackUrl!=null&&this.callbackUrl.isEmpty()) pingCallbackUrl(callbackUrl, obj);
-        } catch (Throwable t) {
-            // l.log(Level.SEVERE, "caught", e);
-            l.log(Level.SEVERE, "", t);
-            this.callback.onError(t);
-        }
+
     }
 
 //    public interface Callback {

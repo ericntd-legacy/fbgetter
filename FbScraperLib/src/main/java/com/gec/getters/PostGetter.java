@@ -1,25 +1,32 @@
-package com.gec;
+package com.gec.getters;
 
-import com.restfb.Connection;
-import com.restfb.DefaultFacebookClient;
-import com.restfb.FacebookClient;
+import com.gec.FbCallable;
 import com.restfb.Parameter;
-import com.restfb.types.Page;
-import com.restfb.types.Post;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
-import java.util.logging.Level;
 
 /**
  * Created by eric on 28/1/15.
  */
-public class VideoPostGetter extends FbGetter {
+public class PostGetter extends FbObjectGetter {
     public static final String TYPE_VIDEO = "video";
 
-    public VideoPostGetter(Callback callback, String callbackUrl) {
+    public PostGetter(Callback callback, String callbackUrl) {
         super(callback, callbackUrl);
+    }
+
+    @Override
+    public void getUser(String accessToken, String userId) {
+        UnsupportedOperationException t = new UnsupportedOperationException("Use UserGetter implementation instead");
+        onError(t);
+    }
+
+    @Override
+    public void getUserPages(String accessToken, String userId) {
+        UnsupportedOperationException t = new UnsupportedOperationException("Use PageGetter implementation instead");
+        onError(t);
     }
 
     public void getPost(String accessToken, String postId) {

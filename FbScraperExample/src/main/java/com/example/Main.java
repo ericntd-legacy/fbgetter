@@ -1,18 +1,14 @@
 package com.example;
 
-import com.gec.*;
 import com.gec.entities.UserFb;
+import com.gec.getters.FbObjectGetter;
+import com.gec.utils.Log;
 import com.restfb.Connection;
-import com.restfb.DefaultJsonMapper;
-import com.restfb.JsonMapper;
 import com.restfb.types.Page;
 import com.restfb.types.Post;
-import com.restfb.types.User;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.*;
 
 /**
@@ -28,12 +24,12 @@ public class Main {
     public static void main(String[] args) {
         Log l = new Log("main");
 
-        final String accessToken =
-                "CAACEdEose0cBAI6ZBJgwsaqgnhjjPFZBwqtsxlGO42RxJQbZBKuaZCS59E3jhSEMi90ZCVRZAcdR0v18DI4sGc6pJsop454tvtSmwjKmFaiwOWDMxYFZCNZCMnZC3gNCbQ48oJkbP9zVHHP2oHClhbtDU3aZBUhqEv1MR8ZB7dHLLDUrlJhfWuskpXGRW1GwXN2BMwJuK3WTLpzZBRNtw9oybCe73FfZAFlHzZCg4ZD";
+        String accessToken =
+                "CAACEdEose0cBADZCSarQW0cJHBWpQslOjIQZAMNePjdWsEvnXIucmDKdZAgCkil7Vax7bK4WnkET0h4PP1ap77sZAUoyrObs0r6wNdnehc9dPrveeSGx2k4mZCpTADKwHfL9daSJFWM7OZBkepS8ZCZCBG9H0G7gyj9mbKIihGleeRUxiXTCnh0NxOgLF2PD5Alb5wfhZCVoLzrHFshWFIBcU17An1rsqtT4ZD";
         final String userId = "me";
         final String callBackUrl = "http://waach.local/callback.php";
 
-        MyCallable callable1 = new MyCallable(accessToken, userId, callBackUrl, FbGetter.JOB_GET_USER);
+        MyCallable callable1 = new MyCallable(accessToken, userId, callBackUrl, FbObjectGetter.JOB_GET_USER);
         FutureTask<Object> task1 = new FutureTask<Object>(callable1);
         ExecutorService executor1 = Executors.newSingleThreadExecutor();
         executor1.execute(task1);
@@ -51,7 +47,7 @@ public class Main {
 
         // get the pages of the user
         if (userFb != null) {
-            MyCallable callable2 = new MyCallable(accessToken, userId, callBackUrl, FbGetter.JOB_GET_USER_PAGES);
+            MyCallable callable2 = new MyCallable(accessToken, userId, callBackUrl, FbObjectGetter.JOB_GET_USER_PAGES);
             FutureTask<Object> task2 = new FutureTask<Object>(callable2);
 
             ExecutorService executor2 = Executors.newSingleThreadExecutor();
@@ -73,7 +69,12 @@ public class Main {
 
         List<Post> videoPosts = new ArrayList<Post>();
         if (page != null) {
-            MyCallable callable3 = new MyCallable(accessToken, page.getId(), callBackUrl, FbGetter
+            /*
+            page access token
+             */
+            accessToken =
+                    "CAACEdEose0cBAGBWcHHw6nNFztGowbiiNQgfoaiZBZCxkkAhhmvST6i8o7NrZA9Vcgjkn6qZCVFKLuDCSk7pNb6IZAYOboO8KbEiLo2ZCM9kksnlKK1ZCfBrBe4uL1QyUBEhRCbThlrnRQc32kmuGooGxYFPrqjKeIcQNZA85aoSVmZBek2ecchXqf5bSyD7ND0unRSY52zZBBPQZDZD";
+            MyCallable callable3 = new MyCallable(accessToken, page.getId(), callBackUrl, FbObjectGetter
                     .JOB_GET_PAGE_VIDEO_POSTS);
             FutureTask<Object> task3 = new FutureTask<Object>(callable3);
 
@@ -122,115 +123,5 @@ public class Main {
 //            l.i("number of video posts is "+count);
 //        }
 
-//        MyHandler handler = new MyHandler();
-//        ExecutorService executor = Executors.newCachedThreadPool();
-
-//        executor.submit(handler);
-//        while (true) {
-//            try {
-//                if(task1.isDone()){
-//                    System.out.println("Done");
-//                    //shut down executor service
-//                    executorService.shutdown();
-//                    return;
-//                }
-//                System.out.println("Waiting for Task 1 to complete");
-//                if(!task1.isDone()){
-//                    //wait indefinitely for future task to complete
-//                    System.out.println("Task1 output="+task1.get(200L, TimeUnit.MILLISECONDS));
-//                }
-//
-//
-//
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }catch(TimeoutException e){
-//                //do nothing
-//            } catch (ExecutionException e) {
-//                e.printStackTrace();
-//            }
-//        }
-
-//        final FbHelper fbHelper = new FbHelper();
-//        fbHelper.getUser(accessToken, userId, null);
-
-
-//        while (userFb==null) {
-//            try {
-//                Thread.sleep(200);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//            if (userFb!=null) {
-//                l.i("the wait is over");
-//                break;
-//            }
-//        }
-//        FutureTask<Page> task = new FutureTask<Page>(
-//                new Callable<Page>() {
-//
-//                    @Override
-//                    public Page call() throws Exception {
-//                        PageGetter pageGetter = (PageGetter) FbGetterFactory.getFbGetter(FbGetterFactory.TYPE_PAGE, fbHelper, callBackUrl);
-//                        Connection<Page> pageConnection = pageGetter.getUserPages(accessToken, userId);
-//                        return pageConnection.getData().get(0);
-//                    }
-//                });
-//        new Thread(task).start();
-//        Page result = null;
-//        try {
-//            result = task.get();
-//            l.i("the wait is over");
-//            l.i("the first page name is "+result.getName());
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        } catch (ExecutionException e) {
-//            e.printStackTrace();
-//        }
-
-//        if (page!=null) {
-//            String pageId = page.getId();
-//            VideoPostGetter videoPostRetriever = (VideoPostGetter) FbGetterFactory.getFbGetter(FbGetterFactory
-//                    .TYPE_POST, fbHelper, callBackUrl);
-//            videoPostRetriever.getPagePosts(accessToken, pageId);
-//        }
     }
-
-//    @Override
-//    public void onHttpCompleted(NamedFacebookType object) {
-//        l.i("onHttpCompleted");
-//        if (object!=null) {
-//            try {
-//                if (object instanceof  UserFb) {
-////                    UserFb user = (UserFb) object;
-////                    l.i("object name is " + user.getName());
-//                    userFb = (UserFb) object;
-//                }
-//
-//            } catch (Throwable t) {
-//                l.e(t);
-//            }
-//        }
-//    }
-//
-//    @Override
-//    public void onHttpCompleted(Connection connection) {
-//        try {
-//            List<Object> list = connection.getData();
-//            l.i("object count "+list.size());
-//            for (int i=0;i<list.size();i++) {
-//                if (list.get(i) instanceof Page) {
-//                    l.i("page name is "+((Page) list.get(i)).getName());
-//                    page = (Page) list.get(i);
-//                }
-//            }
-//        } catch (Throwable t) {
-//            l.e(t);
-//        }
-//    }
-//
-//    @Override
-//    public void onHtttpError(Throwable t) {
-//
-//    }
 }

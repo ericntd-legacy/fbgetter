@@ -1,9 +1,10 @@
-package com.gec;
+package com.gec.getters;
 
-import com.gec.entities.UserFb;
-import com.restfb.DefaultFacebookClient;
-import com.restfb.FacebookClient;
+import com.gec.FbCallable;
+import com.gec.http.HttpRequester;
 import com.restfb.Parameter;
+import facebook4j.Facebook;
+import facebook4j.FacebookFactory;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -12,7 +13,7 @@ import java.util.concurrent.FutureTask;
 /**
  * Created by eric on 28/1/15.
  */
-public class UserGetter extends FbGetter {
+public class UserGetter extends FbObjectGetter {
     protected final String FB_ME = "me";
 
     private final String FB_NAME = "name";
@@ -47,8 +48,26 @@ public class UserGetter extends FbGetter {
         httpRequester.get(finalUrl);
     }
 
+    @Override
     public void getUser(String accessToken, String userId) {
         getUser(accessToken, userId, FB_USER_FIELDS);
+
+        /*
+        Using Facebook4j
+         */
+        // Facebook facebook = new FacebookFactory().getInstance();
+    }
+
+    @Override
+    public void getUserPages(String accessToken, String userId) {
+        UnsupportedOperationException t = new UnsupportedOperationException("Use PageGetter implementation instead");
+        onError(t);
+    }
+
+    @Override
+    public void getPagePosts(String accessToken, String pageId) {
+        UnsupportedOperationException t = new UnsupportedOperationException("Use PostGetter implementation instead");
+        onError(t);
     }
 
 //    @Override
@@ -58,26 +77,10 @@ public class UserGetter extends FbGetter {
 
     private void getUser(String accessToken, String objectId, String fields) {
         l.info("getUser");
-        FbCallable callable1 = new FbCallable(this, JOB_GET_USER, accessToken, objectId, null, null);
+        Parameter parameter = Parameter.with(PARAM_FIELDS, FB_USER_FIELDS);
+        FbCallable callable1 = new FbCallable(this, JOB_GET_USER, accessToken, objectId, null, parameter);
         FutureTask<Void> task1 = new FutureTask<Void>(callable1);
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.execute(task1);
-
-//        FacebookClient facebookClient = new DefaultFacebookClient(accessToken);
-//        UserFb obj = new UserFb();
-//        try {
-//            if (fields!=null) {
-//                obj  = facebookClient.fetchObject(objectId, UserFb.class, Parameter.with(PARAM_FIELDS,
-//                        fields));
-//            } else {
-//                obj = facebookClient.fetchObject(objectId, UserFb.class);
-//            }
-//            if (this.callback != null) this.callback.onSuccess(obj);
-//            // if (this.callbackUrl!=null&&this.callbackUrl.isEmpty()) pingCallbackUrl(callbackUrl, obj);
-//        } catch (Throwable t) {
-//
-//            l.e(t);
-//            if (this.callback!=null) this.callback.onError(t);
-//        }
     }
 }

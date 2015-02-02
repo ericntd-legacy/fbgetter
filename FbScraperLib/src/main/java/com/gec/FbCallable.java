@@ -1,6 +1,8 @@
 package com.gec;
 
 import com.gec.entities.UserFb;
+import com.gec.getters.FbObjectGetter;
+import com.gec.getters.PostGetter;
 import com.restfb.Connection;
 import com.restfb.DefaultFacebookClient;
 import com.restfb.FacebookClient;
@@ -61,19 +63,19 @@ public class FbCallable implements Callable<Void> {
 
         try {
             switch (jobCode) {
-                case FbGetter.JOB_GET_USER:
+                case FbObjectGetter.JOB_GET_USER:
                     if (parameter!=null) result = facebookClient.fetchObject(id, UserFb.class, parameter);
                     else result = facebookClient.fetchObject(id, UserFb.class);
                     break;
-                case FbGetter.JOB_GET_USER_PAGES:
+                case FbObjectGetter.JOB_GET_USER_PAGES:
                     if (parameter!=null) result = facebookClient.fetchConnection(id, Page.class, parameter);
                     else result = facebookClient.fetchConnection(id, Page.class);
                     break;
-                case FbGetter.JOB_GET_PAGE_VIDEO_POSTS:
+                case FbObjectGetter.JOB_GET_PAGE_VIDEO_POSTS:
 //
                     result = fetchPagePosts(id, Post.class);
                     break;
-                case FbGetter.JOB_GET_POST:
+                case FbObjectGetter.JOB_GET_POST:
                     if (parameter!=null) result = facebookClient.fetchObject(id, Post.class, parameter);
                     else result = facebookClient.fetchObject(id, Post.class);
                     break;
@@ -129,7 +131,7 @@ public class FbCallable implements Callable<Void> {
     private void addVideoPosts(List<Post> posts, List<Post> tmp) {
         for (int i=0;i<tmp.size();i++) {
             Post p = tmp.get(i);
-            if (p.getType().equalsIgnoreCase(VideoPostGetter.TYPE_VIDEO)) {
+            if (p.getType().equalsIgnoreCase(PostGetter.TYPE_VIDEO)) {
                 posts.add(p);
             }
         }

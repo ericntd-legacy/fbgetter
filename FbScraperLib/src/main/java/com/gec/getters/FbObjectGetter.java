@@ -1,8 +1,9 @@
-package com.gec;
+package com.gec.getters;
 
+import com.gec.FbCallable;
+import com.gec.http.HttpRequester;
 import com.ning.http.client.Response;
 import com.restfb.*;
-import com.restfb.types.NamedFacebookType;
 import com.sun.istack.internal.Nullable;
 
 import java.io.IOException;
@@ -12,7 +13,7 @@ import java.util.logging.Logger;
 /**
  * Created by Eric on 24/01/15.
  */
-public abstract class FbGetter implements HttpRequester.Callback, FbCallable.Callback {
+public abstract class FbObjectGetter implements HttpRequester.Callback, FbCallable.Callback {
     public final String FB_GRAPH_BASE = "https://graph.facebook.com";
     public final String FB_ACCESS_TOKEN = "access_token";
 
@@ -30,55 +31,59 @@ public abstract class FbGetter implements HttpRequester.Callback, FbCallable.Cal
     public static final byte JOB_GET_PAGE_VIDEO_POSTS = 3;
     public static final byte JOB_GET_POST = 4;
 
+    private static  final String ERR_IMPL_NOT_FOUND = "No specific implementation found; No " +
+            "default implementation";
+
     @Nullable protected String callbackUrl;
     @Nullable protected Callback callback;
 
     protected Logger l = Logger.getLogger(this.getClass().getSimpleName());
     // protected Log l = new Log(this.getClass().getSimpleName());
 
-    public FbGetter(Callback callback, String callbackUrl) {
+    /**
+     * The result can be returned via either the callback interface or the callback URL (JSON object in POST request
+     * body)
+     *
+     *
+     * @param callback
+     * @param callbackUrl
+     */
+    public FbObjectGetter(Callback callback, String callbackUrl) {
         this.callback = callback;
         this.callbackUrl = callbackUrl;
     }
 
-    protected void pingCallbackUrl(Object object) {
+    public void getUser(String accessToken, String userId) {
+        UnsupportedOperationException t = new UnsupportedOperationException(ERR_IMPL_NOT_FOUND);
+        onError(t);
+    }
+    public void getUserPages(String accessToken, String userId) {
+        UnsupportedOperationException t = new UnsupportedOperationException(ERR_IMPL_NOT_FOUND);
+        onError(t);
+    }
+    public void getPagePosts(String accessToken, String pageId) {
+        UnsupportedOperationException t = new UnsupportedOperationException(ERR_IMPL_NOT_FOUND);
+        onError(t);
+    }
+    public void getPost(String accessToken, String postId) {
+        UnsupportedOperationException t = new UnsupportedOperationException(ERR_IMPL_NOT_FOUND);
+        onError(t);
+    }
+    public void publishVideoToPage() {
+        UnsupportedOperationException t = new UnsupportedOperationException(ERR_IMPL_NOT_FOUND);
+        onError(t);
+    }
+    public void shareVideoToPage() {
+        UnsupportedOperationException t = new UnsupportedOperationException(ERR_IMPL_NOT_FOUND);
+        onError(t);
+    }
+
+    private void pingCallbackUrl(Object object) {
         l.info("pingCallbackUrl");
         HttpRequester httpRequester = new HttpRequester(this);
         DefaultJsonMapper jsonMapper = new DefaultJsonMapper();
         httpRequester.post(callbackUrl, jsonMapper.toJson(object));
     }
-
-//    private UserFb getTheUser(String accessToken, String userId) {
-//        l.info("getTheUser");
-//        FacebookClient facebookClient = new DefaultFacebookClient(accessToken);
-//        try {
-//            UserFb user = facebookClient.fetchObject(userId, UserFb.class, Parameter.with(PARAM_FIELDS, FB_USER_FIELDS));
-//            return user;
-//        } catch (Throwable e) {
-//            l.log(Level.SEVERE, "", e);
-//        }
-//        return null;
-//    }
-
-//    protected void getObject(String accessToken, String objectId, String fields) {
-//        l.info("getTheUser");
-//        FacebookClient facebookClient = new DefaultFacebookClient(accessToken);
-//        NamedFacebookType obj = new NamedFacebookType();
-//        try {
-//            if (fields!=null) {
-//                obj  = facebookClient.fetchObject(objectId, NamedFacebookType.class, Parameter.with(PARAM_FIELDS,
-//                        fields));
-//            } else {
-//                obj = facebookClient.fetchObject(objectId, NamedFacebookType.class);
-//            }
-//
-//            if (this.callback != null) this.callback.onHttpCompleted(obj);
-//            if (this.callbackUrl!=null&&this.callbackUrl.infosEmpty()) pingCallbackUrl(callbackUrl, obj);
-//        } catch (Throwable t) {
-//            // l.log(Level.SEVERE, "caught", e);
-//            l.e(t);
-//        }
-//    }
 
     /**
      *

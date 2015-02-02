@@ -1,4 +1,4 @@
-package com.gec;
+package com.gec.utils;
 
 import java.util.logging.Level;
 import java.util.logging.LogManager;

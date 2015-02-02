@@ -1,4 +1,4 @@
-package com.gec;
+package com.gec.http;
 
 import com.ning.http.client.AsyncCompletionHandler;
 import com.ning.http.client.AsyncHttpClient;

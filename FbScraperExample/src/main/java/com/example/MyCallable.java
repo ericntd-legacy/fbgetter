@@ -1,25 +1,26 @@
 package com.example;
 
 import com.gec.*;
-import com.restfb.Connection;
-import com.restfb.types.NamedFacebookType;
+import com.gec.getters.*;
+import com.gec.getters.FbObjectGetter;
+import com.gec.getters.PostGetter;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 
 import java.util.concurrent.Callable;
-import java.util.concurrent.FutureTask;
 import java.util.logging.Logger;
 
 /**
  * Created by eric on 30/1/15.
  */
-public class MyCallable implements Callable<Object>, FbGetter.Callback {
+public class MyCallable implements Callable<Object>, FbObjectGetter.Callback {
     private Object object;
     @NotNull
     private String accessToken;
     @NotNull
     private String objectId;
-    @Nullable private String callbackUrl;
+    @Nullable
+    private String callbackUrl;
 
     private byte jobCode;
 
@@ -40,25 +41,29 @@ public class MyCallable implements Callable<Object>, FbGetter.Callback {
     @Override
     public Object call() throws Exception {
         // l.info("call");
-        FbGetter fbGetter = FbGetterFactory.getFbGetter(this.jobCode, this, this.callbackUrl);
+        FbObjectGetter fbObjectGetter = FbGetterFactory.getFbGetter(this.jobCode, this, this.callbackUrl);
         switch (jobCode) {
-            case FbGetter.JOB_GET_USER:
-                UserGetter userGetter = (UserGetter) fbGetter; // FbGetterFactory.getFbGetter(FbGetterFactory.TYPE_USER,
-                // this, null);
-                userGetter.getUser(accessToken, objectId);
+            case FbObjectGetter.JOB_GET_USER:
+//                UserGetter userGetter = (UserGetter) fbObjectGetter; // FbGetterFactory.getFbGetter(FbGetterFactory.TYPE_USER,
+//                // this, null);
+//                userGetter.getUser(accessToken, objectId);
+                fbObjectGetter.getUser(accessToken, objectId);
                 break;
-            case FbGetter.JOB_GET_USER_PAGES:
+            case FbObjectGetter.JOB_GET_USER_PAGES:
                 // PageGetter pageGetter = FbGetterFactory.getFbGetter(FbGetterFactory.TYPE_POST, this, null);
-                PageGetter pageGetter = (PageGetter) fbGetter;
-                pageGetter.getUserPages(accessToken, objectId);
+//                PageGetter pageGetter = (PageGetter) fbObjectGetter;
+//                pageGetter.getUserPages(accessToken, objectId);
+                fbObjectGetter.getUserPages(accessToken, objectId);
                 break;
-            case FbGetter.JOB_GET_PAGE_VIDEO_POSTS:
-                VideoPostGetter postGetter = (VideoPostGetter) fbGetter;
-                postGetter.getPagePosts(accessToken, objectId);
+            case FbObjectGetter.JOB_GET_PAGE_VIDEO_POSTS:
+//                PostGetter postGetter = (PostGetter) fbObjectGetter;
+//                postGetter.getPagePosts(accessToken, objectId);
+                fbObjectGetter.getPagePosts(accessToken, objectId);
                 break;
-            case FbGetter.JOB_GET_POST:
-                postGetter = (VideoPostGetter) fbGetter;
-                postGetter.getPost(accessToken, objectId);
+            case FbObjectGetter.JOB_GET_POST:
+//                postGetter = (PostGetter) fbObjectGetter;
+//                postGetter.getPost(accessToken, objectId);
+                fbObjectGetter.getPost(accessToken, objectId);
                 break;
         }
 

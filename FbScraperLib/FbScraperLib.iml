@@ -15,5 +15,6 @@
     <orderEntry type="library" name="Maven: io.netty:netty:3.10.0.Final" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.7" level="project" />
     <orderEntry type="library" name="Maven: com.restfb:restfb:1.7.1" level="project" />
+    <orderEntry type="library" name="Maven: org.facebook4j:facebook4j-core:2.2.2" level="project" />
   </component>
 </module>

@@ -1,7 +1,7 @@
 package com.gec.getters;
 
 import com.gec.FbCallable;
-import com.restfb.Parameter;
+// import com.restfb.Parameter;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -37,10 +37,18 @@ public class PostGetter extends FbObjectGetter {
         executorService.execute(task1);
     }
 
+//    public void getPagePosts(String accessToken, String pageId) {
+//        l.info("getPagePosts");
+//        FbCallable callable1 = new FbCallable(this, JOB_GET_PAGE_VIDEO_POSTS, accessToken, pageId, EDGE_FEED, Parameter
+//                .with(PARAM_SINCE, SINCE_DEFAULT));
+//        FutureTask<Void> task1 = new FutureTask<Void>(callable1);
+//        ExecutorService executorService = Executors.newSingleThreadExecutor();
+//        executorService.execute(task1);
+//    }
+
     public void getPagePosts(String accessToken, String pageId) {
         l.info("getPagePosts");
-        FbCallable callable1 = new FbCallable(this, JOB_GET_PAGE_VIDEO_POSTS, accessToken, pageId, EDGE_FEED, Parameter
-                .with(PARAM_SINCE, SINCE_DEFAULT));
+        FbCallable callable1 = new FbCallable(this, JOB_GET_PAGE_VIDEO_POSTS, accessToken, pageId, EDGE_FEED, null);
         FutureTask<Void> task1 = new FutureTask<Void>(callable1);
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.execute(task1);

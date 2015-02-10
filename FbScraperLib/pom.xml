@@ -8,6 +8,12 @@
     <artifactId>FbScraperLib</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <properties>
+        <slf4j.version>1.7.6</slf4j.version>
+        <logback.version>1.1.2</logback.version>
+        <groovy.version>2.4.0</groovy.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.ning</groupId>
@@ -15,16 +21,47 @@
             <version>1.9.6</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.restfb</groupId>
-            <artifactId>restfb</artifactId>
-            <version>1.7.1</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.restfb</groupId>-->
+            <!--<artifactId>restfb</artifactId>-->
+            <!--<version>1.7.1</version>-->
+        <!--</dependency>-->
 
         <dependency>
             <groupId>org.facebook4j</groupId>
             <artifactId>facebook4j-core</artifactId>
             <version>2.2.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy</artifactId>
+            <version>2.4.0</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+            <version>1.9.13</version>
         </dependency>
     </dependencies>
 </project>

@@ -11,11 +11,15 @@
     </content>
     <orderEntry type="jdk" jdkName="1.7" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: org.codehaus.groovy:groovy:2.4.0" level="project" />
     <orderEntry type="module" module-name="FbScraperLib" />
     <orderEntry type="library" name="Maven: com.ning:async-http-client:1.9.6" level="project" />
     <orderEntry type="library" name="Maven: io.netty:netty:3.10.0.Final" level="project" />
-    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.7" level="project" />
-    <orderEntry type="library" name="Maven: com.restfb:restfb:1.7.1" level="project" />
     <orderEntry type="library" name="Maven: org.facebook4j:facebook4j-core:2.2.2" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.6" level="project" />
+    <orderEntry type="library" name="Maven: ch.qos.logback:logback-classic:1.1.2" level="project" />
+    <orderEntry type="library" name="Maven: ch.qos.logback:logback-core:1.1.2" level="project" />
+    <orderEntry type="library" name="Maven: org.codehaus.jackson:jackson-mapper-asl:1.9.13" level="project" />
+    <orderEntry type="library" name="Maven: org.codehaus.jackson:jackson-core-asl:1.9.13" level="project" />
   </component>
 </module>

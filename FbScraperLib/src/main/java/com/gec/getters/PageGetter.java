@@ -15,12 +15,13 @@ import java.util.concurrent.FutureTask;
  */
 public class PageGetter extends FbObjectGetter {
     public static final String EDGE_PAGE_CONSUMPTIONS = "page_consumptions";
-    public static final String EDGE_PAGE_CONSUMPTIONS = "page_consumptions";
-    public static final String EDGE_PAGE_CONSUMPTIONS = "page_consumptions";
-    public static final String EDGE_PAGE_CONSUMPTIONS = "page_consumptions";
-    public static final String EDGE_PAGE_CONSUMPTIONS = "page_consumptions";
-    public static final String EDGE_PAGE_CONSUMPTIONS = "page_consumptions";
-    public static final String EDGE_PAGE_CONSUMPTIONS = "page_consumptions";
+    public static final String EDGE_PAGE_CONSUMPTIONS_BY_TYPE = "page_consumptions_by_consumption_type";
+    public static final String EDGE_PAGE_ENGAGED_USERS = "page_engaged_users";
+    public static final String EDGE_PAGE_FANS = "page_fans";
+    public static final String EDGE_PAGE_FANS_CITY = "page_fans_city";
+    public static final String EDGE_PAGE_FANS_COUNTRY = "page_fans_country";
+    public static final String EDGE_PAGE_FANS_GENDER_AGE = "page_fans_gender_age";
+    public static final String EDGE_PAGE_IMPRESSIONS = "page_impressions";
 
     public PageGetter(Callback callback, String callbackUrl) {
         super(callback, callbackUrl);
@@ -54,24 +55,6 @@ public class PageGetter extends FbObjectGetter {
     public void getPageInsightsAll(String pageId) {
         l.info("getPageInsights");
         FbCallable callable1 = new FbCallable(this, JOB_GET_PAGE_INSIGHTS_ALL, this.facebook, pageId, EDGE_INSIGHTS,
-                null);
-        FutureTask<Void> task1 = new FutureTask<Void>(callable1);
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
-        executorService.execute(task1);
-    }
-    @Override
-    public void getPostInsightsCore(String postId) {
-        l.info("getPageInsights");
-        FbCallable callable1 = new FbCallable(this, JOB_GET_PAGE_INSIGHTS_CORE, this.facebook, postId, EDGE_INSIGHTS,
-                null);
-        FutureTask<Void> task1 = new FutureTask<Void>(callable1);
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
-        executorService.execute(task1);
-    }
-    @Override
-    public void getPostInsightsAll(String postId) {
-        l.info("getPageInsights");
-        FbCallable callable1 = new FbCallable(this, JOB_GET_PAGE_INSIGHTS_CORE, this.facebook, postId, EDGE_INSIGHTS,
                 null);
         FutureTask<Void> task1 = new FutureTask<Void>(callable1);
         ExecutorService executorService = Executors.newSingleThreadExecutor();

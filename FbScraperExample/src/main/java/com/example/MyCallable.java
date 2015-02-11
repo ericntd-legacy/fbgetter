@@ -85,8 +85,10 @@ public class MyCallable implements Callable<Object>, FbObjectGetter.Callback {
                 fbObjectGetter.getPageInsightsAll(this.objectId);
                 break;
             case FbObjectGetter.JOB_GET_POST_INSIGHTS_CORE:
+                fbObjectGetter.getPostInsightsCore(this.objectId);
                 break;
             case FbObjectGetter.JOB_GET_POST_INSIGHTS_ALL:
+                fbObjectGetter.getPostInsightsAll(this.objectId);
                 break;
             default:
                 l.error("invalid job code, nothing is done");
@@ -100,6 +102,7 @@ public class MyCallable implements Callable<Object>, FbObjectGetter.Callback {
                 e.printStackTrace();
             }
             if (this.status == STATUS_ERROR || this.status == STATUS_DONE) {
+                l.info("job done or error encountered");
                 break;
             }
         }

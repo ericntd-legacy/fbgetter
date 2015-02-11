@@ -2,12 +2,15 @@ package com.example;
 
 // import ch.qos.logback.classic.Logger;
 // import com.gec.entities.UserFb;
+
 import com.gec.getters.FbObjectGetter;
 import com.gec.getters.UserGetter;
 
 import facebook4j.*;
 import facebook4j.auth.AccessToken;
 import facebook4j.internal.json.DataObjectFactoryUtil;
+import facebook4j.internal.org.json.JSONArray;
+import facebook4j.internal.org.json.JSONException;
 import facebook4j.internal.org.json.JSONObject;
 import facebook4j.json.DataObjectFactory;
 import org.codehaus.jackson.JsonGenerationException;
@@ -57,45 +60,10 @@ public class Main {
         facebook.setOAuthPermissions("email,user_friends,manage_pages");
         facebook.setOAuthAccessToken(new AccessToken(accessToken, null));
 
-//        MyCallable callable1 = new MyCallable(facebook, userId, callBackUrl, FbObjectGetter.JOB_GET_USER);
-//        FutureTask<Object> task1 = new FutureTask<Object>(callable1);
-//        ExecutorService executor1 = Executors.newSingleThreadExecutor();
-//        executor1.execute(task1);
-//
-//        User user = null;
-//        try {
-//            // userFb = (UserFb) task1.get(30000L, TimeUnit.MILLISECONDS);
-//            user = (User) task1.get(30000L, TimeUnit.MILLISECONDS);
-//            l.info("user name is " + user.getName());
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        } catch (ExecutionException e) {
-//            e.printStackTrace();
-//        } catch (TimeoutException e) {
-//            e.printStackTrace();
-//        }
-//
-//        // get the pages of the user
-//        if (user != null) {
-//            MyCallable callable2 = new MyCallable(facebook, userId, callBackUrl, FbObjectGetter.JOB_GET_USER_PAGES);
-//            FutureTask<Object> task2 = new FutureTask<Object>(callable2);
-//
-//            ExecutorService executor2 = Executors.newSingleThreadExecutor();
-//            executor2.execute(task2);
-//
-//            List<Account> userPages;
-//            try {
-//                userPages = (List<Account>) task2.get(30000L, TimeUnit.MILLISECONDS);
-//                account = userPages.get(0);
-//                l.info("first page name is " + account.getName() + " and id is " + account.getId());
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            } catch (ExecutionException e) {
-//                e.printStackTrace();
-//            } catch (TimeoutException e) {
-//                e.printStackTrace();
-//            }
-//        }
+        // getUser(facebook, userId);
+
+        // get the pages of the user
+        // getUserPages(facebook, userId);
 
         String pageAccessToken = "CAAV5ZCs146SoBABNKTaUqHQFfhvXS54LFjacrpXDQ3BCkxfpc1WZCYomx8hgPBZAZAkK0m958jCPomxbHPHFwUoQ1sWIvB5yvCU0dHj0ix3Wn50WZALShEIeRazGhg5lPhOk4PMhlMGQkTgPaL2UXitfmfSoKXbJgS7U7BmZClORhinUqBGZBX1htnoVQJgBScZD";
         facebook.setOAuthAccessToken(new AccessToken(pageAccessToken, null));
@@ -103,70 +71,12 @@ public class Main {
 
 
         /*
-        get a page's details
+        Get a page's insights
          */
-            /*
-            page access token
-             */
-            MyCallable callable3 = new MyCallable(facebook, pageId, callBackUrl, FbObjectGetter
-                    .JOB_GET_PAGE_INSIGHTS_CORE);
-            FutureTask<Object> task3 = new FutureTask<Object>(callable3);
+        // getPageInsightsCore(facebook, pageId);
+        getPageInsightsAll(facebook, pageId);
 
-            ExecutorService executor2 = Executors.newSingleThreadExecutor();
-            executor2.execute(task3);
-
-
-
-            try {
-                JSONObject object = (JSONObject) task3.get(30000L, TimeUnit.MILLISECONDS);
-                // l.info("there are "+tmp.size()+" - "+tmp.getCount()+" insights");
-//                ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-//                String objJson = null;
-//                objJson = ow.writeValueAsString(object);
-                l.info("result is "+object.toString());
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (TimeoutException e) {
-                e.printStackTrace();
-            }
-//            catch (JsonMappingException e) {
-//                e.printStackTrace();
-//            } catch (JsonGenerationException e) {
-//                e.printStackTrace();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-
-
-//        List<Post> videoPosts = new ArrayList<Post>();
-//        if (account != null) {
-//            /*
-//            page access token
-//             */
-//            MyCallable callable3 = new MyCallable(facebook, account.getId(), callBackUrl, FbObjectGetter
-//                    .JOB_GET_PAGE_VIDEO_POSTS);
-//            FutureTask<Object> task3 = new FutureTask<Object>(callable3);
-//
-//            ExecutorService executor2 = Executors.newSingleThreadExecutor();
-//            executor2.execute(task3);
-//
-//
-//
-//            try {
-//                videoPosts = (List<Post>) task3.get(30000L, TimeUnit.MILLISECONDS);
-//                l.info("number of posts is " + videoPosts.size());
-//
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            } catch (ExecutionException e) {
-//                e.printStackTrace();
-//            } catch (TimeoutException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//
+//        List<Post> videoPosts = getPageVideoPosts(facebook, pageId);
 //        if (videoPosts.size() > 0) {
 //            int count = 0;
 //            for (int i = 0; i < videoPosts.size(); i++) {
@@ -180,6 +90,204 @@ public class Main {
 //                }
 //            }
 //        }
+
+        String postId = "101665995139_10153007415280140";
+        /*
+        Get a page post's insights
+         */
+        // getPostInsightsCore(facebook, postId);
+        // getPostInsightsAll(facebook, postId);
+
+
+    }
+
+    private static void getPageInsightsAll(Facebook facebook, String pageId) {
+        MyCallable callable3 = new MyCallable(facebook, pageId, callBackUrl, FbObjectGetter
+                .JOB_GET_PAGE_INSIGHTS_ALL);
+        FutureTask<Object> task3 = new FutureTask<Object>(callable3);
+
+        ExecutorService executor3 = Executors.newSingleThreadExecutor();
+        executor3.execute(task3);
+
+
+        try {
+            JSONObject insights = (JSONObject) task3.get(30000L, TimeUnit.MILLISECONDS);
+            // l.info("there are "+tmp.size()+" - "+tmp.getCount()+" insights");
+//                ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+//                String objJson = null;
+//                objJson = ow.writeValueAsString(object);
+            l.info("number of metrics " + insights.getJSONArray("data").length());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+//            catch (JsonMappingException e) {
+//                e.printStackTrace();
+//            } catch (JsonGenerationException e) {
+//                e.printStackTrace();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+    }
+
+    private static void getPostInsightsAll(Facebook facebook, String postId) {
+        MyCallable callable4 = new MyCallable(facebook, postId, callBackUrl, FbObjectGetter
+                .JOB_GET_POST_INSIGHTS_ALL);
+        FutureTask<Object> task4 = new FutureTask<Object>(callable4);
+
+        ExecutorService executor4 = Executors.newSingleThreadExecutor();
+        executor4.execute(task4);
+
+
+        try {
+            JSONObject object = (JSONObject) task4.get(30000L, TimeUnit.MILLISECONDS);
+            // l.info("there are "+tmp.size()+" - "+tmp.getCount()+" insights");
+//                ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+//                String objJson = null;
+//                objJson = ow.writeValueAsString(object);
+            // l.info("page post's insights is " + object.toString());
+            JSONArray insights = object.getJSONArray("data");
+            l.info("number of insights returned "+insights.length());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private static void getUser(Facebook facebook, String userId) {
+        MyCallable callable1 = new MyCallable(facebook, userId, callBackUrl, FbObjectGetter.JOB_GET_USER);
+        FutureTask<Object> task1 = new FutureTask<Object>(callable1);
+        ExecutorService executor1 = Executors.newSingleThreadExecutor();
+        executor1.execute(task1);
+
+        User user = null;
+        try {
+            // userFb = (UserFb) task1.get(30000L, TimeUnit.MILLISECONDS);
+            user = (User) task1.get(30000L, TimeUnit.MILLISECONDS);
+            l.info("user name is " + user.getName());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void getUserPages(Facebook facebook, String userId) {
+
+            MyCallable callable2 = new MyCallable(facebook, userId, callBackUrl, FbObjectGetter.JOB_GET_USER_PAGES);
+            FutureTask<Object> task2 = new FutureTask<Object>(callable2);
+
+            ExecutorService executor2 = Executors.newSingleThreadExecutor();
+            executor2.execute(task2);
+
+            List<Account> userPages;
+            try {
+                userPages = (List<Account>) task2.get(30000L, TimeUnit.MILLISECONDS);
+                account = userPages.get(0);
+                l.info("first page name is " + account.getName() + " and id is " + account.getId());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (TimeoutException e) {
+                e.printStackTrace();
+            }
+
+    }
+
+    private static List<Post> getPageVideoPosts(Facebook facebook, String pageId) {
+        List<Post> videoPosts = new ArrayList<Post>();
+
+        MyCallable callable = new MyCallable(facebook, pageId, callBackUrl, FbObjectGetter
+                .JOB_GET_PAGE_VIDEO_POSTS);
+        FutureTask<Object> task = new FutureTask<Object>(callable);
+
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(task);
+
+
+        try {
+            videoPosts = (List<Post>) task.get(30000L, TimeUnit.MILLISECONDS);
+            l.info("number of posts is " + videoPosts.size());
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
+        return videoPosts;
+    }
+
+    private static void getPageInsightsCore(Facebook facebook, String pageId) {
+        MyCallable callable3 = new MyCallable(facebook, pageId, callBackUrl, FbObjectGetter
+                .JOB_GET_PAGE_INSIGHTS_CORE);
+        FutureTask<Object> task3 = new FutureTask<Object>(callable3);
+
+        ExecutorService executor3 = Executors.newSingleThreadExecutor();
+        executor3.execute(task3);
+
+
+        try {
+            JSONObject object = (JSONObject) task3.get(30000L, TimeUnit.MILLISECONDS);
+            // l.info("there are "+tmp.size()+" - "+tmp.getCount()+" insights");
+//                ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+//                String objJson = null;
+//                objJson = ow.writeValueAsString(object);
+            l.info("result is " + object.toString());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
+//            catch (JsonMappingException e) {
+//                e.printStackTrace();
+//            } catch (JsonGenerationException e) {
+//                e.printStackTrace();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+    }
+
+    private static void getPostInsightsCore(Facebook facebook, String postId) {
+        MyCallable callable4 = new MyCallable(facebook, postId, callBackUrl, FbObjectGetter
+                .JOB_GET_POST_INSIGHTS_CORE);
+        FutureTask<Object> task4 = new FutureTask<Object>(callable4);
+
+        ExecutorService executor4 = Executors.newSingleThreadExecutor();
+        executor4.execute(task4);
+
+
+        try {
+            JSONObject object = (JSONObject) task4.get(30000L, TimeUnit.MILLISECONDS);
+            // l.info("there are "+tmp.size()+" - "+tmp.getCount()+" insights");
+//                ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+//                String objJson = null;
+//                objJson = ow.writeValueAsString(object);
+            l.info("page post's insights is " + object.toString());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
     }
 
     private static void getPagePosts(Facebook facebook, String pageId) {
@@ -199,7 +307,7 @@ public class Main {
             videoPosts = (List<facebook4j.Post>) task3.get(30000L, TimeUnit.MILLISECONDS);
             l.info("number of posts is " + videoPosts.size());
             for (int i = 0; i < videoPosts.size(); i++) {
-                l.info("number of shares "+videoPosts.get(i).getSharesCount());
+                l.info("number of shares " + videoPosts.get(i).getSharesCount());
             }
         } catch (InterruptedException e) {
             e.printStackTrace();

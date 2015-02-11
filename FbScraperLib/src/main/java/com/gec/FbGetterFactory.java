@@ -32,9 +32,9 @@ public class FbGetterFactory {
             case FbObjectGetter.JOB_GET_PAGE_INSIGHTS_ALL:
                 return  new PageGetter(facebook, callback, callbackUrl);
             case FbObjectGetter.JOB_GET_POST_INSIGHTS_CORE:
-                return  new PageGetter(facebook, callback, callbackUrl);
+                return  new PostGetter(facebook, callback, callbackUrl);
             case FbObjectGetter.JOB_GET_POST_INSIGHTS_ALL:
-                return  new PageGetter(facebook, callback, callbackUrl);
+                return  new PostGetter(facebook, callback, callbackUrl);
             default:
                 throw new InvalidParameterException("Invalid job code, refer to "+FbObjectGetter.class);
         }

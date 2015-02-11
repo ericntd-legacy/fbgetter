@@ -10,16 +10,20 @@ package com.gec;
 //import com.restfb.types.Page;
 //import com.restfb.types.Post;
 import com.gec.getters.FbObjectGetter;
+import com.gec.getters.PageGetter;
 import com.gec.getters.PostGetter;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 import facebook4j.*;
 import facebook4j.auth.AccessToken;
+import facebook4j.internal.http.RequestMethod;
+import facebook4j.internal.org.json.JSONArray;
 import facebook4j.internal.org.json.JSONException;
 import facebook4j.internal.org.json.JSONObject;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -145,12 +149,13 @@ public class FbCallable implements Callable<Void> {
                     result = getPageInsightsCore();
                     break;
                 case FbObjectGetter.JOB_GET_PAGE_INSIGHTS_ALL:
-                    result = facebook.getPageInsights(this.objectId);// this will pull out all! 213 insights as of
-                    // 10th Feb 2015
+                    result = getPageInsightsAll();
                     break;
                 case FbObjectGetter.JOB_GET_POST_INSIGHTS_CORE:
+                    result = getPostInsightsCore();
                     break;
                 case FbObjectGetter.JOB_GET_POST_INSIGHTS_ALL:
+                    result = getPostInsightsAll();
                     break;
                 default:
                     l.error("invalid job code, nothing is done");
@@ -165,13 +170,129 @@ public class FbCallable implements Callable<Void> {
 
     }
 
+    private JSONObject getPageInsightsAll() {
+        l.info("getPageInsightsAll");
+        JSONObject result = null;
+        try {
+            RawAPIResponse res = facebook.callGetAPI(this.objectId+"/"+ FbObjectGetter
+                    .EDGE_INSIGHTS);
+            result = res.asJSONObject();
+        } catch (FacebookException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    private JSONObject getPostInsightsAll() {
+        l.info("getPostInsightsAll");
+        JSONObject result = null;
+        try {
+            RawAPIResponse res = facebook.callGetAPI(this.objectId+"/"+ FbObjectGetter
+                        .EDGE_INSIGHTS);
+            result = res.asJSONObject();
+        } catch (FacebookException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    private JSONObject getPostInsightsCore() {
+        l.info("getPostInsightsCore");
+        JSONObject result = new JSONObject();
+        try {
+            BatchRequests<BatchRequest> batch = new BatchRequests<BatchRequest>();
+            batch.add(new BatchRequest(RequestMethod.GET, this.objectId+"/"+FbObjectGetter.EDGE_INSIGHTS+"/"+
+                    PostGetter.EDGE_POST_CONSUMPTIONS ));
+            batch.add(new BatchRequest(RequestMethod.GET, this.objectId+"/"+FbObjectGetter.EDGE_INSIGHTS+"/"+
+                    PostGetter.EDGE_POST_CONSUMPTIONS_BY_TYPE ));
+            batch.add(new BatchRequest(RequestMethod.GET, this.objectId+"/"+FbObjectGetter.EDGE_INSIGHTS+"/"+
+                    PostGetter.EDGE_POST_IMPRESSIONS ));
+            batch.add(new BatchRequest(RequestMethod.GET, this.objectId+"/"+FbObjectGetter.EDGE_INSIGHTS+"/"+
+                    PostGetter.EDGE_POST_VIDEO_AVG_TIME_WATCHED ));
+            batch.add(new BatchRequest(RequestMethod.GET, this.objectId+"/"+FbObjectGetter.EDGE_INSIGHTS+"/"+
+                    PostGetter.EDGE_POST_VIDEO_COMPLETE_VIEWS_ORGANIC ));
+            batch.add(new BatchRequest(RequestMethod.GET, this.objectId+"/"+FbObjectGetter.EDGE_INSIGHTS+"/"+
+                    PostGetter.EDGE_POST_VIDEO_VIEWS_ORGANIC ));
+
+            List<BatchResponse> results = facebook.executeBatch(batch);
+
+            BatchResponse result1 = results.get(0);
+            BatchResponse result2 = results.get(1);
+            BatchResponse result3 = results.get(2);
+            BatchResponse result4 = results.get(3);
+            BatchResponse result5 = results.get(4);
+            BatchResponse result6 = results.get(5);
+
+            result.put(PostGetter.EDGE_POST_CONSUMPTIONS, result1.asJSONObject());
+            result.put(PostGetter.EDGE_POST_CONSUMPTIONS_BY_TYPE, result2.asJSONObject());
+            result.put(PostGetter.EDGE_POST_IMPRESSIONS, result3.asJSONObject());
+            result.put(PostGetter.EDGE_POST_VIDEO_AVG_TIME_WATCHED, result4.asJSONObject());
+            result.put(PostGetter.EDGE_POST_VIDEO_COMPLETE_VIEWS_ORGANIC, result5.asJSONObject());
+            result.put(PostGetter.EDGE_POST_VIDEO_VIEWS_ORGANIC, result6.asJSONObject());
+
+        } catch (FacebookException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+
     private Object getPageInsightsCore() {
         JSONObject result = new JSONObject();
         try {
-            RawAPIResponse res = facebook.callGetAPI(this.objectId+"/"+FbObjectGetter
-                    .EDGE_INSIGHTS+"/"+FbObjectGetter.EDGE_PAGE_CONSUMPTIONS);
-            JSONObject jsonObject = res.asJSONObject();
-            result.put("testing", jsonObject);
+//            Map<String, String> params = new HashMap<String, String>();
+//            params.put("period", "days_28");
+            /*
+            Page consumption
+             */
+//            RawAPIResponse res = facebook.callGetAPI(this.objectId+"/"+FbObjectGetter
+//                    .EDGE_INSIGHTS+"/"+ PageGetter.EDGE_PAGE_CONSUMPTIONS);
+//            JSONObject jsonObject = res.asJSONObject();
+//            result.put(PageGetter.EDGE_PAGE_CONSUMPTIONS, jsonObject);
+
+            BatchRequests<BatchRequest> batch = new BatchRequests<BatchRequest>();
+            batch.add(new BatchRequest(RequestMethod.GET, this.objectId+"/"+FbObjectGetter.EDGE_INSIGHTS+"/"+
+                    PageGetter.EDGE_PAGE_CONSUMPTIONS ));
+            batch.add(new BatchRequest(RequestMethod.GET, this.objectId+"/"+FbObjectGetter.EDGE_INSIGHTS+"/"+
+                    PageGetter.EDGE_PAGE_CONSUMPTIONS_BY_TYPE ));
+            batch.add(new BatchRequest(RequestMethod.GET, this.objectId+"/"+FbObjectGetter.EDGE_INSIGHTS+"/"+
+                    PageGetter.EDGE_PAGE_ENGAGED_USERS ));
+            batch.add(new BatchRequest(RequestMethod.GET, this.objectId+"/"+FbObjectGetter.EDGE_INSIGHTS+"/"+
+                    PageGetter.EDGE_PAGE_FANS ));
+            batch.add(new BatchRequest(RequestMethod.GET, this.objectId+"/"+FbObjectGetter.EDGE_INSIGHTS+"/"+
+                    PageGetter.EDGE_PAGE_FANS_CITY ));
+            batch.add(new BatchRequest(RequestMethod.GET, this.objectId+"/"+FbObjectGetter.EDGE_INSIGHTS+"/"+
+                    PageGetter.EDGE_PAGE_FANS_COUNTRY ));
+            batch.add(new BatchRequest(RequestMethod.GET, this.objectId+"/"+FbObjectGetter.EDGE_INSIGHTS+"/"+
+                    PageGetter.EDGE_PAGE_FANS_GENDER_AGE ));
+            batch.add(new BatchRequest(RequestMethod.GET, this.objectId+"/"+FbObjectGetter.EDGE_INSIGHTS+"/"+
+                    PageGetter.EDGE_PAGE_IMPRESSIONS ));
+
+            List<BatchResponse> results = facebook.executeBatch(batch);
+
+            BatchResponse result1 = results.get(0);
+            BatchResponse result2 = results.get(1);
+            BatchResponse result3 = results.get(2);
+            BatchResponse result4 = results.get(3);
+            BatchResponse result5 = results.get(4);
+            BatchResponse result6 = results.get(5);
+            BatchResponse result7 = results.get(6);
+            BatchResponse result8 = results.get(7);
+
+            result.put(PageGetter.EDGE_PAGE_CONSUMPTIONS, result1.asJSONObject());
+            result.put(PageGetter.EDGE_PAGE_CONSUMPTIONS_BY_TYPE, result2.asJSONObject());
+            result.put(PageGetter.EDGE_PAGE_ENGAGED_USERS, result3.asJSONObject());
+            result.put(PageGetter.EDGE_PAGE_FANS, result4.asJSONObject());
+            result.put(PageGetter.EDGE_PAGE_FANS_CITY, result5.asJSONObject());
+            result.put(PageGetter.EDGE_PAGE_FANS_COUNTRY, result6.asJSONObject());
+            result.put(PageGetter.EDGE_PAGE_FANS_GENDER_AGE, result7.asJSONObject());
+            result.put(PageGetter.EDGE_PAGE_IMPRESSIONS, result8.asJSONObject());
+
         } catch (FacebookException e) {
             e.printStackTrace();
         } catch (JSONException e) {
